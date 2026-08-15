@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MeshSense / RuView Status</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0b0d10; color: #e7ebef; }
+    main { width: min(720px, calc(100% - 32px)); padding: 28px; border: 1px solid #30363d; border-radius: 14px; background: #11151a; }
+    .state { display: inline-block; margin: 12px 0 20px; padding: 6px 10px; border-radius: 999px; background: #17351f; color: #8ee29c; }
+    dl { display: grid; grid-template-columns: 180px 1fr; gap: 10px 18px; }
+    dt { color: #8b949e; } dd { margin: 0; overflow-wrap: anywhere; }
+    small { color: #8b949e; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>MeshSense / RuView Status</h1>
+    <div class="state" id="state">Checking runtime…</div>
+    <dl>
+      <dt>Service</dt><dd id="service">—</dd>
+      <dt>Evidence level</dt><dd id="evidence">—</dd>
+      <dt>Source</dt><dd id="source">—</dd>
+      <dt>Observed at</dt><dd id="time">—</dd>
+    </dl>
+    <p><small>This surface reports deployment/runtime status. It does not establish acoustic performance, spatial inference accuracy, or governance effectiveness.</small></p>
+  </main>
+  <script>
+    fetch('/api/status', { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : Promise.reject(new Error('status ' + r.status)))
+      .then(data => {
+        document.getElementById('state').textContent = String(data.state).toUpperCase();
+        document.getElementById('service').textContent = data.service;
+        document.getElementById('evidence').textContent = data.evidenceLevel;
+        document.getElementById('source').textContent = data.source;
+        document.getElementById('time').textContent = data.generatedAt;
+      })
+      .catch(() => { document.getElementById('state').textContent = 'RUNTIME CHECK FAILED'; });
+  </script>
+</body>
+</html>
