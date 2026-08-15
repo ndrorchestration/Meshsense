@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify JavaScript syntax
+        run: node --check server.js
+      - name: Verify package scripts
+        run: npm run check
+      - name: Smoke test runtime
+        run: |
+          node server.js > /tmp/meshsense-status.log 2>&1 &
+          PID=$!
+          trap 'kill $PID' EXIT
+          sleep 1
+          curl --fail --silent http://127.0.0.1:3000/health
+          curl --fail --silent http://127.0.0.1:3000/api/status
+          curl --fail --silent http://127.0.0.1:3000/ | grep -q 'MeshSense / RuView Status'
