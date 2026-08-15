@@ -1,39 +1,51 @@
 # MeshSense / RuView Status — Repository Quality Baseline
 
 **Audit date:** 2026-08-15  
-**Scope:** engineering quality, runtime provenance, CI, security, reproducibility  
-**Epistemic status:** audit record; not a runtime-validation claim
+**Epistemic status:** experimental runtime-status surface; production route behavior currently failing
 
-## Verified observations
+## Verified source state
 
-- `EVIDENCE.md` defines distinct evidence levels and correctly states that deployment does not establish acoustic, spatial, WebRTC, or governance claims.
-- `server.js` exposes `/health` and `/api/status` with explicit service/source metadata and a runtime timestamp.
-- CI exists for the repository.
-- The repository contains `vercel.json`, establishing deployment configuration in source.
-- The ecosystem manifest separately identifies the Vercel project as `meshsense-ruview-status` and keeps runtime/source equivalence pending.
+- README defines `/health` and `/api/status` as intended machine-readable runtime endpoints and explicitly separates this repository from `Acoustic-mesh`. fileciteturn106file0
+- `package.json` defines Node >=20 and `npm run check` as `node --check server.js`. fileciteturn107file0
+- `server.js` implements `/health` and `/api/status` with HTTP 200 responses and an explicit `evidenceLevel: runtime-surface`. fileciteturn108file0
+- CI and `vercel.json` remain part of the repository deployment surface.
 
-## P0 — runtime/source equivalence remains open
+## Production runtime finding — 2026-08-15
 
-The status endpoints are source-defined, but source inspection alone cannot establish which commit is actually serving production. Closure requires a dated production trace tying the Vercel deployment to an exact GitHub commit and recording `/health` and `/api/status` responses.
+The current Vercel production deployment was inspected directly. Both documented endpoints returned **HTTP 404**:
 
-Tracked in Meshsense issue #1.
+- `GET /health` → `{"error":"not_found"}`
+- `GET /api/status` → `{"error":"not_found"}`
 
-## P1 — status semantics
+Vercel runtime logs for deployment `dpl_uZdP6uzH1puxtZkPPdq5pwfEjJWJ` confirm both requests reached production and returned 404. The runtime log reports `Legacy server listening...`, which does not match the current repository `server.js` startup message (`MeshSense status listening on ...`).
 
-The server reports `state: operational`. This is acceptable as a status-surface field describing the service itself, but it must not be interpreted as proof that the underlying MeshSense/RuView system or acoustic functionality is operational. The existing `evidenceLevel: runtime-surface` field provides the needed boundary.
+This is strong evidence that the current production deployment is not serving the inspected repository implementation at the documented routes, or is otherwise bound to a different source/runtime than the current `main` state.
 
-## P1 — test depth
+## Evidence classification
 
-The inspected CI workflow provides build/type-level automation, but repository-level endpoint behavior should have a deterministic test that starts the server and verifies `/health`, `/api/status`, root rendering, and 404 behavior. This should run in CI without requiring production credentials.
+| Layer | State |
+|---|---|
+| Repository source implementation | **VERIFIED** |
+| Local syntax-check definition | **VERIFIED** |
+| Vercel project existence | **VERIFIED** |
+| Production deployment existence | **VERIFIED** |
+| Documented route behavior in production | **FAILED** |
+| GitHub source → production equivalence | **FAILED / UNRESOLVED** |
+| Runtime status surface | **NOT VERIFIED** |
+| Acoustic validation | **NOT CLAIMED** |
+| Spatial/sensor validation | **NOT CLAIMED** |
 
-## Security boundary
+## Required remediation
 
-The inspected server uses only standard Node HTTP/file APIs and does not require a secret for local status-surface tests. No production credential or deployment secret should be committed to the repository.
+1. Identify the source/build associated with the current Vercel deployment.
+2. Reconcile the deployment with canonical `ndrorchestration/Meshsense` `main`.
+3. Redeploy from the intended source if the binding is stale.
+4. Re-test `/health`, `/api/status`, and `/` after deployment.
+5. Retain deployment ID, source commit, timestamps, HTTP responses, and runtime logs as the reproducibility artifact.
+6. Do not classify MeshSense as runtime verified until those checks pass.
 
-## Promotion rule
+## Normalization rule
 
-`CODED`, `CI VERIFIED`, and `DEPLOYED` must remain distinct from `RUNTIME VERIFIED`. Runtime verification must identify the exact deployed source revision.
+A `READY` Vercel deployment proves deployment completion, not intended-source equivalence or route correctness.
 
-## Next action
-
-Add deterministic endpoint tests, then close issue #1 only after a production deployment trace establishes source/commit equivalence.
+*Updated during the 2026-08-15 repository quality normalization pass.*
