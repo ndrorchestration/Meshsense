@@ -45,22 +45,35 @@ The companion layer is evaluated separately from the underlying sensing system. 
 
 ## The six-failure-mode experiment
 
-The central research artifact is a six-failure-mode compensation study. Each failure mode should be formalized with:
+The authoritative experimental specification is frozen in [`docs/experiment/FAILURE_MODE_MATRIX.md`](docs/experiment/FAILURE_MODE_MATRIX.md).
 
-1. **Failure definition** — what can go wrong.
-2. **Observable/trigger** — how the failure can be detected.
-3. **Impact** — why it matters.
-4. **Compensation mechanism** — what MeshSense does in response.
-5. **Expected improvement** — what should change if compensation works.
-6. **Test procedure** — how the claim is experimentally tested.
-7. **Pass/fail criterion** — what constitutes success.
-8. **Evidence artifact** — what reproducible evidence supports the result.
+The six modes are currently frozen as **provisional experimental hypotheses**, not established defects in RuView:
 
-The exact six failure modes are intentionally treated as an experimental specification rather than being inferred from this deployment README. Their authoritative definitions belong in the experiment/test documentation so that each claim can be independently audited.
+1. **FM-01 — Multi-path interference & ambient clutter**
+2. **FM-02 — Sensor hardware mismatch**
+3. **FM-03 — WiFi channel hopping / interference**
+4. **FM-04 — Low-SNR environment**
+5. **FM-05 — Multi-person occlusion / target entanglement**
+6. **FM-06 — Latency / real-time constraint**
+
+Each mode is pre-specified with:
+
+- failure definition;
+- trigger / observable;
+- impact;
+- compensation mechanism;
+- expected improvement;
+- test procedure;
+- quantitative pass/fail criterion; and
+- required evidence artifact.
+
+### Critical experimental rule
+
+These modes are **hypotheses to test**, not claims that RuView necessarily fails in every circumstance. A mode is not considered a demonstrated defect, and a compensation is not considered effective, until its dedicated evidence criteria are satisfied.
 
 ### Evidence rule
 
-A failure-mode mitigation is **not considered demonstrated** merely because the companion service is deployed or returns HTTP 200. Compensation effectiveness requires a dedicated experiment with a measurable criterion.
+A failure-mode mitigation is **not considered demonstrated** merely because the companion service is deployed or returns HTTP 200. Compensation effectiveness requires a dedicated experiment with a measurable criterion and an independent reference condition.
 
 ## MeshSense runtime verification surface
 
@@ -106,17 +119,22 @@ The deployment layer uses the progression:
 
 `CODED → CI VERIFIED → DEPLOYED → RUNTIME VERIFIED → EVIDENCE CLASSIFIED`
 
+The experiment adds a separate progression for each failure mode:
+
+`HYPOTHESIS → BASELINE → COMPENSATION → MECHANISTIC EVIDENCE → OUTCOME EVIDENCE → GENERALIZATION`
+
 The final deployment state means that the **runtime verification surface itself** has been observed and its evidence boundaries are explicit. It does not mean the six compensation hypotheses have been proven.
 
 ## What this project establishes
 
 - An independent companion-layer experiment around an existing third-party sensing system.
-- A framework for formalizing six failure modes and their compensation tests.
+- A frozen six-mode failure-compensation hypothesis set.
 - A reproducible Node.js runtime verification surface.
 - Explicit health and status contracts.
 - Production deployment observability.
 - Source-to-deployment provenance.
 - Runtime exposure of the deployed commit SHA.
+- Quantitative experiment criteria for each proposed compensation.
 - Clear separation between operational evidence and capability claims.
 
 ## What this project does not establish
@@ -182,13 +200,15 @@ The project is intentionally conservative about claims. A production HTTP 200 is
 
 The runtime commit identifier exists specifically to make the deployment provenance chain inspectable.
 
-### Next quality priorities
+## Next experimental priorities
 
-1. Formalize the authoritative six-failure-mode matrix.
-2. Add automated regression tests for each compensation contract.
-3. Define quantitative pass/fail thresholds for each mitigation.
-4. Preserve source-to-runtime provenance in CI/CD.
-5. Produce reproducible evidence artifacts for successful and unsuccessful compensation trials.
+1. Implement or instrument one compensation mechanism at a time.
+2. Establish matched baseline and compensated trial fixtures.
+3. Capture the measurements required by the frozen matrix.
+4. Run repeated pre-registered trials and preserve negative results.
+5. Add automated regression tests around the operational contracts and experiment instrumentation.
+6. Evaluate generalization on conditions not used to tune the compensation.
+7. Preserve source-to-runtime provenance for every evidence artifact.
 
 ## Attribution
 
