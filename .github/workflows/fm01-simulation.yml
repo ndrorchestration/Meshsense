@@ -1,0 +1,35 @@
+name: FM-01 Simulation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/fm01-sim.js'
+      - 'docs/experiment/FM-01_EXPERIMENT_PROTOCOL.md'
+      - 'package.json'
+      - '.github/workflows/fm01-simulation.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/fm01-sim.js'
+      - 'docs/experiment/FM-01_EXPERIMENT_PROTOCOL.md'
+      - 'package.json'
+      - '.github/workflows/fm01-simulation.yml'
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Validate harness syntax
+        run: node --check scripts/fm01-sim.js
+      - name: Run deterministic FM-01 simulation
+        run: npm run experiment:fm01
+      - name: Upload synthetic evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fm01-simulation-results
+          path: artifacts/fm01-sim/trial_results.json
