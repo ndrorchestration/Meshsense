@@ -5,12 +5,14 @@ import { fileURLToPath } from "node:url";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const port = Number(process.env.PORT || 3000);
+const commitSha = process.env.VERCEL_GIT_COMMIT_SHA || process.env.GIT_COMMIT_SHA || "unknown";
 
 const status = {
   service: "meshsense-ruview-status",
   state: "operational",
   evidenceLevel: "runtime-surface",
   source: "ndrorchestration/Meshsense",
+  commit: commitSha,
   generatedAt: () => new Date().toISOString()
 };
 
