@@ -62,13 +62,29 @@ At minimum capture:
 - hardware identity;
 - software commit identifier.
 
+## Frozen primary metric
+
+For the **simulation-pipeline validation stage**, the primary metric is:
+
+> **Mean squared error (MSE) between the observed signal trace and the known synthetic target trace over the predefined perturbed window; lower is better.**
+
+For physical or recorded-CSI experiments, this metric may be retained only where an independently derived target reference is available. Otherwise a separately pre-registered externally measurable task metric must be selected before formal data collection.
+
 ## Primary outcome
 
 The frozen matrix defines success as:
 
 > **At least 20% improvement in the predefined error/confidence metric versus the unmitigated reference across at least 3 repeated trials, with no more than 10% degradation in the clean baseline.**
 
-The exact metric must be selected and documented **before** the first formal trial. The metric cannot be chosen after inspecting compensated results.
+For the simulation stage, improvement is calculated as:
+
+`(MSE_reference_perturbed - MSE_compensated_perturbed) / MSE_reference_perturbed × 100%`
+
+Clean-baseline degradation is:
+
+`(MSE_compensated_clean - MSE_reference_clean) / MSE_reference_clean × 100%`
+
+The formulas and thresholds cannot be changed after observing results.
 
 ## Secondary diagnostics
 
@@ -125,6 +141,8 @@ Each completed trial package should contain:
 - pass/fail decision;
 - limitations and anomalous observations.
 
+Simulation-stage evidence must additionally state that it is **synthetic pipeline evidence** and cannot be used as physical or RuView performance evidence.
+
 ## Decision states
 
 - **PASS:** frozen criterion satisfied.
@@ -136,6 +154,6 @@ No state other than PASS with preserved evidence may be described as demonstrate
 
 ## Current status
 
-**Design complete. Data collection not yet demonstrated.**
+**Design complete. Simulation harness implemented. Synthetic pipeline validation pending/available through CI. Physical/recorded-CSI data collection not yet demonstrated.**
 
-The MeshSense runtime/provenance layer is operational, but this document records an experimental protocol rather than an experimental result.
+The MeshSense runtime/provenance layer is operational, but this document records an experimental protocol rather than a physical experimental result.
