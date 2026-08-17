@@ -11,7 +11,7 @@
 - Published archive size: ~11.1 GB
 - Published MD5: `3e7d17df775762e9703ca818b1256c86`
 
-The dataset provides CSI sequences for indoor activities, collected with 160-MHz 802.11ax devices and 4 antennas, using three receivers at different locations; the associated project also publishes anonymized ground-truth keypoints. citeturn333451search0turn333451search1
+The dataset provides CSI sequences for indoor activities, collected with 160-MHz 802.11ax devices and 4 antennas, using three receivers at different locations; the associated project also publishes anonymized ground-truth keypoints.
 
 ## Purpose in MeshSense
 
