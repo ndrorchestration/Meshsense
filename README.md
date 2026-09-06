@@ -34,7 +34,7 @@ The project therefore focuses on **failure-mode analysis, compensation strategie
               │ Compensation        │
               │ Verification        │
               │ Runtime Evidence    │
-              │ Provenance           │
+              │ Provenance          │
               └──────────┬──────────┘
                          │
                          ▼
@@ -56,85 +56,65 @@ The six modes are currently frozen as **provisional experimental hypotheses**, n
 5. **FM-05 — Multi-person occlusion / target entanglement**
 6. **FM-06 — Latency / real-time constraint**
 
-Each mode is pre-specified with:
-
-- failure definition;
-- trigger / observable;
-- impact;
-- compensation mechanism;
-- expected improvement;
-- test procedure;
-- quantitative pass/fail criterion; and
-- required evidence artifact.
+Each mode is pre-specified with a failure definition, observable, proposed compensation, test procedure, quantitative pass/fail criterion, and required evidence artifact.
 
 ### Critical experimental rule
 
 These modes are **hypotheses to test**, not claims that RuView necessarily fails in every circumstance. A mode is not considered a demonstrated defect, and a compensation is not considered effective, until its dedicated evidence criteria are satisfied.
 
-### Evidence rule
-
-A failure-mode mitigation is **not considered demonstrated** merely because the companion service is deployed or returns HTTP 200. Compensation effectiveness requires a dedicated experiment with a measurable criterion and an independent reference condition.
+A failure-mode mitigation is also **not considered demonstrated** merely because the companion service is deployed or returns HTTP 200. Compensation effectiveness requires a dedicated experiment with a measurable criterion and an independent reference condition.
 
 ## MeshSense runtime verification surface
 
-The repository also contains a deliberately small Node.js service used to verify the companion-layer deployment boundary. Its role is **deployment verification, runtime observability, and evidence classification**.
+The repository contains a deliberately small Node.js service used to verify the companion-layer deployment boundary. Its role is **deployment verification, runtime observability, and evidence classification**.
 
-### `/`
-
-A minimal browser-facing status surface.
-
-### `/health`
-
-A machine-readable deployment/health response containing service identity, operational state, evidence level, source repository, deployed commit, and generation timestamp.
-
-### `/api/status`
-
-A machine-readable runtime status endpoint with the same provenance information. Responses use `no-store` so stale operational status is not mistaken for current evidence.
-
-### Routing behavior
-
-Routes are resolved from `URL.pathname` rather than the raw request URL. This prevents query parameters used for probes, cache-busting, or observability from producing false 404 responses.
-
-## Current verified deployment state
-
-As of **2026-08-17**, the production runtime verification surface has been audited through the canonical Vercel deployment.
-
-- **Repository:** `ndrorchestration/Meshsense`
-- **Branch:** `main`
-- **Verified deployment commit:** `dbd9f13141b14f06357f99323710bfd0fd994013`
-- **Production deployment:** `dpl_6j1pZBaagPvYdrPNYngR6Tt4yWnW`
-- **Deployment state:** READY
-- `/` returns HTTP 200
-- `/health` returns HTTP 200
-- `/api/status` returns HTTP 200
-- `/health` and `/api/status` expose the deployed Git commit SHA
-- Query-string routing has been verified
-- Source → commit → deployment → canonical runtime provenance is verified
+- `/` — browser-facing status surface.
+- `/health` — machine-readable runtime/deployment status including source repository and deployed commit.
+- `/api/status` — machine-readable runtime status with `no-store` semantics.
 
 The runtime provenance surface uses Vercel's `VERCEL_GIT_COMMIT_SHA` when available, with `GIT_COMMIT_SHA` as a fallback.
 
+## Current verified deployment state
+
+Freshly reconciled **2026-09-06**:
+
+- **Repository:** `ndrorchestration/Meshsense`
+- **Branch:** `main`
+- **Current GitHub main:** `594ac6c4ba85cd7ac5cb332a7cc1d2167e3e4967`
+- **Current production deployment:** `dpl_93qbVTmHzTY5NpTBPSJzcxx25hSf`
+- **Vercel project:** `meshsense-ruview-status`
+- **Deployment state:** `READY`
+- **Deployment target:** `production`
+- **Deployment Git SHA:** `594ac6c4ba85cd7ac5cb332a7cc1d2167e3e4967`
+- **Source/deployment identity:** **VERIFIED — exact SHA match**
+- `/` observed HTTP 200 on 2026-09-06
+- `/health` observed HTTP 200 and reported commit `594ac6c4ba85cd7ac5cb332a7cc1d2167e3e4967`
+- `/api/status` observed HTTP 200 with `cache-control: no-store` and reported the same commit
+- **Current runtime/source binding:** **VERIFIED for this runtime status surface**
+
+This verification establishes that the current status service is deployed from the current `main` revision and that the observed runtime endpoints expose that identity. It does **not** establish sensing correctness or failure-mode compensation effectiveness.
+
 ## Evidence model
 
-The deployment layer uses the progression:
+Deployment/runtime evidence:
 
-`CODED → CI VERIFIED → DEPLOYED → RUNTIME VERIFIED → EVIDENCE CLASSIFIED`
+`CODED → CI/STATIC CHECKS → DEPLOYED → SOURCE-BOUND → RUNTIME OBSERVED → EVIDENCE CLASSIFIED`
 
-The experiment adds a separate progression for each failure mode:
+Experimental evidence for each failure mode:
 
 `HYPOTHESIS → BASELINE → COMPENSATION → MECHANISTIC EVIDENCE → OUTCOME EVIDENCE → GENERALIZATION`
 
-The final deployment state means that the **runtime verification surface itself** has been observed and its evidence boundaries are explicit. It does not mean the six compensation hypotheses have been proven.
+The two tracks must remain separate. Runtime health is not experimental efficacy.
 
-## What this project establishes
+## What this project currently establishes
 
-- An independent companion-layer experiment around an existing third-party sensing system.
+- An independent companion-layer experiment around a third-party sensing system.
 - A frozen six-mode failure-compensation hypothesis set.
 - A reproducible Node.js runtime verification surface.
 - Explicit health and status contracts.
-- Production deployment observability.
-- Source-to-deployment provenance.
+- A current production deployment exactly bound to current GitHub `main` as verified on 2026-09-06.
 - Runtime exposure of the deployed commit SHA.
-- Quantitative experiment criteria for each proposed compensation.
+- Quantitative experiment criteria for proposed compensations.
 - Clear separation between operational evidence and capability claims.
 
 ## What this project does not establish
@@ -149,7 +129,7 @@ A successful deployment or healthy runtime does **not** establish:
 - pose-estimation accuracy;
 - vital-sign estimation accuracy;
 - effectiveness of any of the six compensations without dedicated experiments;
-- ASIS capability or field performance;
+- ASIS field performance;
 - PDMAL superiority;
 - DGAF/governance effectiveness; or
 - broader scientific claims made by the surrounding ecosystem.
@@ -160,17 +140,12 @@ Those claims require their own implementation, benchmark, experiment, and/or aud
 
 MeshSense is an **independent experimental companion**, not a fork or replacement for RuView.
 
-The external reference system is:
-
-- **RuView:** `ruvnet/RuView` — an existing open-source WiFi-sensing application maintained by another developer.
-
-The local project should be understood as:
-
+- **RuView:** external reference system maintained by `ruvnet`.
 - **MeshSense:** experimental companion/failure-mode compensation layer.
-- **Runtime status surface:** deployment and provenance verification infrastructure.
-- **Six-failure-mode matrix:** the experimental evidence track for determining whether compensation actually works.
+- **Runtime status surface:** deployment/provenance verification infrastructure.
+- **Six-failure-mode matrix:** experimental evidence track for determining whether compensation actually works.
 
-This separation is intentional. It allows deployment infrastructure, compensation hypotheses, and underlying sensing capabilities to be evaluated independently rather than conflated.
+Cross-repository relationships do not transfer validation.
 
 ## Local validation
 
@@ -179,26 +154,11 @@ npm run check
 npm start
 ```
 
-Then inspect:
-
-```text
-/
-/health
-/api/status
-```
-
-Query-string probes should also preserve routing, for example:
-
-```text
-/health?probe=1
-/api/status?probe=1
-```
+Then inspect `/`, `/health`, and `/api/status`. Query-string probes should preserve route behavior as defined by the implementation.
 
 ## Audit posture
 
-The project is intentionally conservative about claims. A production HTTP 200 is evidence of an operational endpoint; it is not evidence of sensing correctness or compensation effectiveness.
-
-The runtime commit identifier exists specifically to make the deployment provenance chain inspectable.
+A production HTTP 200 is evidence of an operational endpoint. Exact Git/deployment SHA agreement is evidence of source binding. Neither is evidence of sensing correctness or compensation effectiveness.
 
 ## Next experimental priorities
 
@@ -206,9 +166,9 @@ The runtime commit identifier exists specifically to make the deployment provena
 2. Establish matched baseline and compensated trial fixtures.
 3. Capture the measurements required by the frozen matrix.
 4. Run repeated pre-registered trials and preserve negative results.
-5. Add automated regression tests around the operational contracts and experiment instrumentation.
-6. Evaluate generalization on conditions not used to tune the compensation.
-7. Preserve source-to-runtime provenance for every evidence artifact.
+5. Add automated regression tests around experiment instrumentation.
+6. Evaluate generalization under conditions not used to tune the compensation.
+7. Preserve source-to-runtime and source-to-experiment provenance for every evidence artifact.
 
 ## Attribution
 
