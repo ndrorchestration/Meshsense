@@ -24,7 +24,10 @@ const server = http.createServer(async (req, res) => {
   const pathname = url.pathname;
 
   if (pathname === "/health") {
-    res.writeHead(200, { "content-type": "application/json; charset=utf-8" });
+    res.writeHead(200, {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store"
+    });
     res.end(JSON.stringify({ ...status, generatedAt: status.generatedAt() }));
     return;
   }
