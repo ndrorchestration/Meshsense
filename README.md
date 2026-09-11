@@ -76,19 +76,19 @@ The runtime provenance surface uses Vercel's `VERCEL_GIT_COMMIT_SHA` when availa
 
 ## Current verified deployment state
 
-Freshly reconciled **2026-09-06**:
+Freshly reconciled **2026-09-10**:
 
 - **Repository:** `ndrorchestration/Meshsense`
 - **Branch:** `main`
-- **Current GitHub main:** `594ac6c4ba85cd7ac5cb332a7cc1d2167e3e4967`
-- **Current production deployment:** `dpl_93qbVTmHzTY5NpTBPSJzcxx25hSf`
+- **Current GitHub main:** `8e90a79e612ba2d9cb19d783dae488a3cec70935`
+- **Current production deployment:** `dpl_Eq8sq7jMRMy2swZRpRdu4rLWHbKZ`
 - **Vercel project:** `meshsense-ruview-status`
 - **Deployment state:** `READY`
 - **Deployment target:** `production`
-- **Deployment Git SHA:** `594ac6c4ba85cd7ac5cb332a7cc1d2167e3e4967`
+- **Deployment Git SHA:** `8e90a79e612ba2d9cb19d783dae488a3cec70935`
 - **Source/deployment identity:** **VERIFIED — exact SHA match**
-- `/` observed HTTP 200 on 2026-09-06
-- `/health` observed HTTP 200 and reported commit `594ac6c4ba85cd7ac5cb332a7cc1d2167e3e4967`
+- `/` observed HTTP 200 on 2026-09-10
+- `/health` observed HTTP 200 with `cache-control: no-store` and reported commit `8e90a79e612ba2d9cb19d783dae488a3cec70935`
 - `/api/status` observed HTTP 200 with `cache-control: no-store` and reported the same commit
 - **Current runtime/source binding:** **VERIFIED for this runtime status surface**
 
@@ -112,7 +112,7 @@ The two tracks must remain separate. Runtime health is not experimental efficacy
 - A frozen six-mode failure-compensation hypothesis set.
 - A reproducible Node.js runtime verification surface.
 - Explicit health and status contracts.
-- A current production deployment exactly bound to current GitHub `main` as verified on 2026-09-06.
+- A current production deployment exactly bound to current GitHub `main` as verified on 2026-09-10.
 - Runtime exposure of the deployed commit SHA.
 - Quantitative experiment criteria for proposed compensations.
 - Clear separation between operational evidence and capability claims.
