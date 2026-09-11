@@ -74,25 +74,27 @@ The repository contains a deliberately small Node.js service used to verify the 
 
 The runtime provenance surface uses Vercel's `VERCEL_GIT_COMMIT_SHA` when available, with `GIT_COMMIT_SHA` as a fallback.
 
-## Current verified deployment state
+## Runtime verification snapshot — 2026-09-10
 
-Freshly reconciled **2026-09-10**:
+The following is **event-time evidence**, not a self-updating current-state record. Later commits or deployments may supersede these identifiers without invalidating what was observed at the recorded verification time.
 
 - **Repository:** `ndrorchestration/Meshsense`
-- **Branch:** `main`
-- **Current GitHub main:** `8e90a79e612ba2d9cb19d783dae488a3cec70935`
-- **Current production deployment:** `dpl_Eq8sq7jMRMy2swZRpRdu4rLWHbKZ`
+- **Branch observed:** `main`
+- **GitHub main observed at verification:** `8e90a79e612ba2d9cb19d783dae488a3cec70935`
+- **Production deployment observed:** `dpl_Eq8sq7jMRMy2swZRpRdu4rLWHbKZ`
 - **Vercel project:** `meshsense-ruview-status`
-- **Deployment state:** `READY`
-- **Deployment target:** `production`
-- **Deployment Git SHA:** `8e90a79e612ba2d9cb19d783dae488a3cec70935`
-- **Source/deployment identity:** **VERIFIED — exact SHA match**
+- **Deployment state observed:** `READY`
+- **Deployment target observed:** `production`
+- **Deployment Git SHA observed:** `8e90a79e612ba2d9cb19d783dae488a3cec70935`
+- **Snapshot source/deployment identity:** **VERIFIED — exact SHA match**
 - `/` observed HTTP 200 on 2026-09-10
 - `/health` observed HTTP 200 with `cache-control: no-store` and reported commit `8e90a79e612ba2d9cb19d783dae488a3cec70935`
 - `/api/status` observed HTTP 200 with `cache-control: no-store` and reported the same commit
-- **Current runtime/source binding:** **VERIFIED for this runtime status surface**
+- **Snapshot runtime/source binding:** **VERIFIED for this runtime status surface**
 
-This verification establishes that the current status service is deployed from the current `main` revision and that the observed runtime endpoints expose that identity. It does **not** establish sensing correctness or failure-mode compensation effectiveness.
+This snapshot establishes that the observed production status service was deployed from the identified `main` revision and that the observed runtime endpoints exposed that identity at verification time. It does **not** claim those identifiers remain the newest revision indefinitely, and it does **not** establish sensing correctness or failure-mode compensation effectiveness.
+
+For a present-tense deployment claim, re-run the source → deployment → runtime verification chain instead of treating this snapshot as live state.
 
 ## Evidence model
 
@@ -112,7 +114,7 @@ The two tracks must remain separate. Runtime health is not experimental efficacy
 - A frozen six-mode failure-compensation hypothesis set.
 - A reproducible Node.js runtime verification surface.
 - Explicit health and status contracts.
-- A current production deployment exactly bound to current GitHub `main` as verified on 2026-09-10.
+- A dated, source-bound production runtime observation from 2026-09-10, preserved as event-time evidence rather than a perpetually current claim.
 - Runtime exposure of the deployed commit SHA.
 - Quantitative experiment criteria for proposed compensations.
 - Clear separation between operational evidence and capability claims.
