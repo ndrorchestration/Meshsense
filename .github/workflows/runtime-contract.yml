@@ -45,6 +45,17 @@ jobs:
       - name: Verify unknown route fails closed
         run: |
           test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:3000/not-a-route)" = "404"
+      - name: Verify README runtime evidence is snapshot-bounded
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q '^## Runtime verification snapshot — ' README.md
+          grep -q 'event-time evidence' README.md
+          if grep -Eq '^## Current verified deployment state$|\*\*Current GitHub main:\*\*|\*\*Current production deployment:\*\*' README.md; then
+            echo "Self-invalidating present-tense deployment evidence found in README." >&2
+            exit 1
+          fi
+          echo "README runtime evidence is snapshot-bounded."
       - name: Stop service
         if: always()
         run: |
